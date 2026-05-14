@@ -1,0 +1,6 @@
+.env
+bot.db
+*.pdf
+__pycache__/
+.venv/
+.idea/
