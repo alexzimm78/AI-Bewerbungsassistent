@@ -40,6 +40,7 @@ from handlers.companies import (
 )
 from handlers.interviews import interview, interviews, reminders, deleteinterview
 from handlers.dashboard import dashboard
+from handlers.ai_job import aijob
 
 
 load_dotenv()
@@ -75,8 +76,12 @@ app.add_handler(CommandHandler("export", export))
 app.add_handler(CommandHandler("help", help_command))
 app.add_handler(CommandHandler("dashboard", dashboard))
 app.add_handler(CommandHandler("followup", followup))
-app.add_handler(CommandHandler("companyinfo", companyinfo)
-)
+app.add_handler(CommandHandler("companyinfo", companyinfo))
+app.add_handler(CommandHandler("aijob", aijob))
+
+
+
+
 
 
 
