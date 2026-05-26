@@ -1,16 +1,57 @@
 import sqlite3
 
-# Verbindung
-conn = sqlite3.connect("bot.db", check_same_thread=False)
+conn = sqlite3.connect("database.db")
+
 cursor = conn.cursor()
 
-# Tabelle
+
+# users Tabelle
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     skills TEXT,
     experience TEXT,
     address TEXT
+)
+""")
+
+conn.commit()
+
+
+# applications Tabelle
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    email TEXT,
+    bewerbung_typ TEXT,
+    sent_at TEXT
+)
+""")
+
+conn.commit()
+
+# companies Tabelle
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS companies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    name TEXT,
+    email TEXT,
+    status TEXT
+)
+""")
+
+conn.commit()
+
+# interviews Tabelle
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS interviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    company TEXT,
+    interview_date TEXT,
+    note TEXT
 )
 """)
 

@@ -1,7 +1,8 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-
 from database.db import cursor
+
+
 
 USER_NAME = "Alexander Zimmermann"
 
@@ -33,21 +34,21 @@ async def bewerbung(update: Update, context: ContextTypes.DEFAULT_TYPE):
         experience = "Logistik"
 
     text = f"""
-Hallo,
+    Hallo,
 
-hiermit möchte ich mich auf die Stelle als {job_title} bewerben.
+    hiermit möchte ich mich auf die Stelle als {job_title} bewerben.
 
-Ich interessiere mich sehr für IT und absolviere aktuell eine Weiterbildung im Bereich AI Engineering.
+    Ich interessiere mich sehr für IT und absolviere aktuell eine Weiterbildung im Bereich AI Engineering.
 
-Durch meine bisherigen Erfahrungen in den Bereichen {experience}
-bringe ich Zuverlässigkeit, strukturiertes Arbeiten und Verantwortungsbewusstsein mit.
+    Durch meine bisherigen Erfahrungen in den Bereichen {experience}
+    bringe ich Zuverlässigkeit, strukturiertes Arbeiten und Verantwortungsbewusstsein mit.
 
-Zusätzlich verfüge ich über folgende Kenntnisse und Fähigkeiten:
-{skills}
+    Zusätzlich verfüge ich über folgende Kenntnisse und Fähigkeiten:
+    {skills}
 
-Mit freundlichen Grüßen
-{USER_NAME}
-"""
+    Mit freundlichen Grüßen
+    Alexander Zimmermann
+    """
 
     keyboard = [
         [
