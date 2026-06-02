@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from database.db import cursor
+from database.db import conn, cursor
 from utils.ai_generator import generate_ai_cover_letter
 
 
@@ -11,12 +11,15 @@ async def aibewerbung(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not args:
         await update.message.reply_text(
             "📄 Bitte sende die Stellenanzeige hinter dem Befehl.\n\n"
-            "Beispiel:\n/aibewerbung IT Support Microsoft 365 Service Desk"
+            "Beispiel:\n/aibewerbung Siemens IT Support Microsoft 365 Service Desk"
         )
         return
 
-    job_text = " ".join(args)
+    company_name = args[0]
+    job_text = " ".join(args[1:])
     user_id = update.effective_user.id
+
+    context.user_data["last_company_name"] = company_name
 
     cursor.execute("""
     SELECT skills, experience
@@ -40,5 +43,44 @@ async def aibewerbung(update: Update, context: ContextTypes.DEFAULT_TYPE):
         experience=experience
     )
     context.user_data["last_cover_letter"] = result
+    # Firma im CRM speichern oder aktualisieren
+    cursor.execute("""
+    SELECT id
+    FROM companies
+    WHERE user_id = ?
+    AND name = ?
+    """, (
+        user_id,
+        company_name
+    ))
 
-    await update.message.reply_text(result)
+    existing_company = cursor.fetchone()
+
+    if existing_company:
+        cursor.execute("""
+        UPDATE companies
+        SET status = ?
+        WHERE user_id = ?
+        AND name = ?
+        """, (
+            "Bewerbung erstellt",
+            user_id,
+            company_name
+        ))
+    else:
+        cursor.execute("""
+        INSERT INTO companies (
+            user_id,
+            name,
+            email,
+            status
+        )
+        VALUES (?, ?, ?, ?)
+        """, (
+            user_id,
+            company_name,
+            "Noch keine Email",
+            "Bewerbung erstellt"
+        ))
+
+    conn.commit()

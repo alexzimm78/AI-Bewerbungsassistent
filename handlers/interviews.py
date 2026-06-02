@@ -2,25 +2,37 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from database.db import conn, cursor
+from datetime import datetime
 
-###
+
 async def interview(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await addinterview(update, context)
+
+
+async def addinterview(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
 
     if len(args) < 3:
         await update.message.reply_text(
-            "Benutzung:\n/interview Firma Datum Uhrzeit\n\n"
-            "Beispiel:\n/interview Siemens 20.05.2026 14:00"
+            "Benutzung:\n"
+            "/addinterview Firma Datum Notiz\n\n"
+            "Beispiel:\n"
+            "/addinterview Siemens 10.06.2026 Teams-Meeting"
         )
         return
 
     company = args[0]
-    interview_date = args[1] + " " + args[2]
-    note = " ".join(args[3:]) if len(args) > 3 else ""
+    interview_date = args[1]
+    note = " ".join(args[2:])
     user_id = update.effective_user.id
 
     cursor.execute("""
-    INSERT INTO interviews (user_id, company, interview_date, note)
+    INSERT INTO interviews (
+        user_id,
+        company,
+        interview_date,
+        note
+    )
     VALUES (?, ?, ?, ?)
     """, (
         user_id,
@@ -32,10 +44,13 @@ async def interview(update: Update, context: ContextTypes.DEFAULT_TYPE):
     conn.commit()
 
     await update.message.reply_text(
-        f"✅ Interview gespeichert:\n{company}\n📅 {interview_date}"
+        f"✅ Interview gespeichert\n\n"
+        f"🏢 Firma: {company}\n"
+        f"📅 Datum: {interview_date}\n"
+        f"📝 Notiz: {note}"
     )
 
-###
+
 async def interviews(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
 
@@ -49,7 +64,9 @@ async def interviews(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rows = cursor.fetchall()
 
     if not rows:
-        await update.message.reply_text("❌ Keine Interviews gespeichert.")
+        await update.message.reply_text(
+            "❌ Keine Interviews gespeichert."
+        )
         return
 
     text = "📅 Deine Interviews\n\n"
@@ -69,11 +86,8 @@ async def interviews(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(text)
 
-from datetime import datetime
 
-###
 async def reminders(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     user_id = update.effective_user.id
 
     cursor.execute("""
@@ -92,24 +106,21 @@ async def reminders(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     text = "🔔 Kommende Interviews\n\n"
-
     now = datetime.now()
 
     for row in rows:
-
         company, interview_date, note = row
 
         try:
             interview_dt = datetime.strptime(
                 interview_date,
-                "%d.%m.%Y %H:%M"
+                "%d.%m.%Y"
             )
 
             diff = interview_dt - now
             days_left = diff.days
 
             if days_left >= 0:
-
                 text += (
                     f"🏢 {company}\n"
                     f"📅 {interview_date}\n"
@@ -121,11 +132,20 @@ async def reminders(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 text += "\n"
 
-        except:
-            continue
+        except Exception:
+            text += (
+                f"🏢 {company}\n"
+                f"📅 {interview_date}\n"
+            )
+
+            if note:
+                text += f"📝 {note}\n"
+
+            text += "\n"
 
     await update.message.reply_text(text)
-###
+
+
 async def deleteinterview(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
 
@@ -157,5 +177,3 @@ async def deleteinterview(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"🗑 Interview gelöscht:\n{company}"
     )
-
-###

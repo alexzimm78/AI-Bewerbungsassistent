@@ -69,14 +69,29 @@ async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if len(args) < 2:
         await update.message.reply_text(
-            "Benutzung:\n/status Firmenname neuer_status\n\n"
-            "Beispiel:\n/status Siemens eingeladen"
+            "Benutzung:\n/status Firmenname status\n\n"
+            "Beispiele:\n"
+            "/status Siemens gesendet\n"
+            "/status Siemens interview\n"
+            "/status Siemens zusage\n"
+            "/status Siemens absage"
         )
         return
 
     company_name = args[0]
-    new_status = " ".join(args[1:])
+    status_input = args[1].lower()
     user_id = update.effective_user.id
+
+    status_map = {
+        "erstellt": "Bewerbung erstellt",
+        "gesendet": "Bewerbung gesendet",
+        "nachfass": "Nachfassmail gesendet",
+        "interview": "Interview",
+        "zusage": "Zusage",
+        "absage": "Absage"
+    }
+
+    new_status = status_map.get(status_input, status_input)
 
     cursor.execute("""
     UPDATE companies
@@ -391,7 +406,6 @@ async def cancel_followup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 ###
 async def companyinfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     args = context.args
 
     if not args:
@@ -434,11 +448,14 @@ async def companyinfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     interview_count = cursor.fetchone()[0]
 
+    pdf_name = f"Bewerbung_{name}.pdf"
+
     text = (
         f"🏢 Firma\n\n"
         f"Name: {name}\n"
-        f"📧 {email}\n\n"
+        f"📧 Email: {email}\n\n"
         f"📌 Status:\n{status}\n\n"
+        f"📄 PDF:\n{pdf_name}\n\n"
         f"🎤 Interviews: {interview_count}"
     )
 

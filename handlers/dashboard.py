@@ -20,46 +20,77 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     SELECT COUNT(*)
     FROM companies
     WHERE user_id = ?
-    AND status = 'eingeladen'
+    AND status = 'Bewerbung erstellt'
     """, (user_id,))
 
-    eingeladen = cursor.fetchone()[0]
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM interviews
-    WHERE user_id = ?
-    """, (user_id,))
-
-    interviews = cursor.fetchone()[0]
+    erstellt = cursor.fetchone()[0]
 
     cursor.execute("""
     SELECT COUNT(*)
     FROM companies
     WHERE user_id = ?
-    AND status = 'absage'
+    AND status = 'Bewerbung gesendet'
+    """, (user_id,))
+
+    gesendet = cursor.fetchone()[0]
+
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM companies
+    WHERE user_id = ?
+    AND status = 'Nachfassmail gesendet'
+    """, (user_id,))
+
+    nachfass = cursor.fetchone()[0]
+
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM companies
+    WHERE user_id = ?
+    AND status = 'Interview'
+    """, (user_id,))
+
+    interviews_status = cursor.fetchone()[0]
+
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM companies
+    WHERE user_id = ?
+    AND status = 'Zusage'
+    """, (user_id,))
+
+    zusagen = cursor.fetchone()[0]
+
+    cursor.execute("""
+    SELECT COUNT(*)
+    FROM companies
+    WHERE user_id = ?
+    AND status = 'Absage'
     """, (user_id,))
 
     absagen = cursor.fetchone()[0]
 
-    offen = total - eingeladen - absagen
+    offen = erstellt + gesendet + nachfass
 
     if total > 0:
         erfolgsquote = round(
-            (eingeladen / total) * 100,
+            ((interviews_status + zusagen) / total) * 100,
             1
         )
     else:
         erfolgsquote = 0
+
     text = (
         "📊 Bewerbungs Dashboard\n\n"
-        f"📨 Bewerbungen: {total}\n"
-        f"✅ Eingeladen: {eingeladen}\n"
-        f"🎤 Interviews: {interviews}\n"
+        f"📨 Firmen gesamt: {total}\n\n"
+        f"📝 Erstellt: {erstellt}\n"
+        f"📤 Gesendet: {gesendet}\n"
+        f"📩 Nachfassmail: {nachfass}\n"
+        f"🎤 Interview: {interviews_status}\n"
+        f"✅ Zusagen: {zusagen}\n"
         f"❌ Absagen: {absagen}\n"
         f"⏳ Offen: {offen}\n\n"
         f"📈 Erfolgsquote: {erfolgsquote}%"
     )
-
 
     await update.message.reply_text(text)

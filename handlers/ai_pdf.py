@@ -15,7 +15,15 @@ async def aipdf(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    filename = create_cover_pdf(cover_letter)
+    company_name = context.user_data.get(
+        "last_company_name",
+        "Firma"
+    )
+
+    filename = create_cover_pdf(
+        cover_letter,
+        filename=f"Bewerbung_{company_name}.pdf"
+    )
 
     await update.message.reply_document(
         document=open(filename, "rb")
