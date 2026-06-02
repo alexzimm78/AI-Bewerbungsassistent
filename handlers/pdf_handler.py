@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from database.db import cursor
-from utils.pdf_generator import create_pdf
+from utils.pdf_generator import create_cover_pdf
 
 
 async def pdf(update: Update, context: ContextTypes.DEFAULT_TYPE):

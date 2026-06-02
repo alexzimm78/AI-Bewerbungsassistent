@@ -1,51 +1,41 @@
-from reportlab.pdfgen import canvas
+import os
+from datetime import datetime
 
-USER_NAME = "Alexander Zimmermann"
-EMAIL = "alexzimm@gmx.com"
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer
+)
+from reportlab.lib.styles import getSampleStyleSheet
 
-def create_pdf(skills, experience, address):
 
-    filename = "Lebenslauf.pdf"
+def create_cover_pdf(text, filename=None):
+    if filename is None:
+        date = datetime.now().strftime("%Y-%m-%d_%H-%M")
+        filename = f"Bewerbung_{date}.pdf"
 
-    c = canvas.Canvas(filename)
+    folder = "bewerbungen"
+    os.makedirs(folder, exist_ok=True)
 
-    # Titel
-    c.setFont("Helvetica-Bold", 24)
-    c.drawString(180, 800, "Lebenslauf")
+    filepath = os.path.join(folder, filename)
 
-    c.line(80, 785, 520, 785)
+    doc = SimpleDocTemplate(filepath)
+    styles = getSampleStyleSheet()
 
-    # Name
-    c.setFont("Helvetica-Bold", 18)
-    c.drawString(100, 740, USER_NAME)
+    content = []
 
-    # Weiterbildung
-    c.setFont("Helvetica", 13)
-    c.drawString(100, 715, "AI Engineering Weiterbildung")
+    content.append(Paragraph("<b>Alexander Zimmermann</b>", styles["Title"]))
+    content.append(Paragraph("Berlin | alexzimm@gmx.com", styles["Normal"]))
+    content.append(Spacer(1, 25))
 
-    # Kontakt
-    c.setFont("Helvetica", 11)
-    c.drawString(100, 690, f"E-Mail: {EMAIL}")
-    c.drawString(100, 670, f"Adresse: {address}")
+    content.append(Paragraph("<b>Bewerbung</b>", styles["Heading2"]))
+    content.append(Spacer(1, 10))
 
-    # Erfahrung
-    c.setFont("Helvetica-Bold", 15)
-    c.drawString(100, 610, "Berufserfahrung")
+    for p in text.split("\n"):
+        if p.strip():
+            content.append(Paragraph(p, styles["Normal"]))
+            content.append(Spacer(1, 8))
 
-    c.setFont("Helvetica", 12)
-    c.drawString(120, 585, experience)
+    doc.build(content)
 
-    # Skills
-    c.setFont("Helvetica-Bold", 15)
-    c.drawString(100, 530, "Kenntnisse")
-
-    c.setFont("Helvetica", 12)
-    c.drawString(120, 505, skills)
-
-    # Footer
-    c.setFont("Helvetica-Oblique", 10)
-    c.drawString(100, 100, "Erstellt mit AI Bewerbungsassistent")
-
-    c.save()
-
-    return filename
+    return filepath

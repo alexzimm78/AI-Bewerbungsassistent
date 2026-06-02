@@ -82,3 +82,51 @@ maximal 3 Sätze
     )
 
     return response.output_text
+
+###
+def generate_ai_cover_letter(job_text, skills, experience):
+    prompt = f"""
+Du bist ein professioneller Bewerbungscoach für den deutschen Arbeitsmarkt.
+
+Erstelle ein individuelles Bewerbungsschreiben auf Deutsch.
+Wichtig:
+Verwende am Ende:
+
+Mit freundlichen Grüßen
+
+Alexander Zimmermann
+
+Verwende niemals "Vorname Nachname".
+
+Profil des Bewerbers:
+Skills: {skills}
+Erfahrung: {experience}
+Weiterbildung: AI Engineer an der AIT Technology School, 03/2026 bis 09/2026
+Aktuelles Ziel: Einstieg in IT Support, Service Desk oder Applikationsbetreuung
+
+Stellenanzeige:
+{job_text}
+
+Anforderungen:
+- professionell
+- glaubwürdig für einen IT-Quereinsteiger
+- nicht übertreiben
+- Logistik-Erfahrung sinnvoll mit IT verbinden
+- maximal 250 Wörter
+- mit Grußformel
+"""
+
+    response = client.responses.create(
+        model="gpt-5",
+        input=prompt
+    )
+
+    result = response.output_text
+
+    result = result.replace("Vorname Nachname", "Alexander Zimmermann")
+    result = result.replace("■", "-")
+    result = result.replace("–", "-")
+    result = result.replace("—", "-")
+
+    return result
+

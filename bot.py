@@ -11,7 +11,8 @@ import os
 
 from handlers.start import start, help_command
 from handlers.profile import profile
-from handlers.pdf_handler import pdf
+### from handlers.pdf_handler import pdf
+from handlers.ai_pdf import aipdf
 from handlers.bewerbung import bewerbung
 from handlers.buttons import button
 from handlers.messages import handle_message
@@ -41,10 +42,13 @@ from handlers.companies import (
 from handlers.interviews import interview, interviews, reminders, deleteinterview
 from handlers.dashboard import dashboard
 from handlers.ai_job import aijob
+from handlers.ai_cover import aibewerbung
+from handlers.ai_pdf import aipdf
+
 
 
 load_dotenv()
-
+###
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 app = ApplicationBuilder().token(TOKEN).build()
@@ -56,7 +60,8 @@ app.add_handler(CommandHandler("setexperience", setexperience))
 app.add_handler(CommandHandler("setaddress", setaddress))
 app.add_handler(CommandHandler("profile", profile))
 app.add_handler(CommandHandler("bewerbung", bewerbung))
-app.add_handler(CommandHandler("pdf", pdf))
+### app.add_handler(CommandHandler("pdf", pdf))
+app.add_handler(CommandHandler("aipdf", aipdf))
 app.add_handler(CommandHandler("sendbewerbung", sendbewerbung))
 app.add_handler(CommandHandler("sendtest", sendtest))
 app.add_handler(CommandHandler("history", history))
@@ -78,8 +83,8 @@ app.add_handler(CommandHandler("dashboard", dashboard))
 app.add_handler(CommandHandler("followup", followup))
 app.add_handler(CommandHandler("companyinfo", companyinfo))
 app.add_handler(CommandHandler("aijob", aijob))
-
-
+app.add_handler(CommandHandler("aibewerbung", aibewerbung))
+app.add_handler(CommandHandler("aipdf", aipdf))
 
 
 
