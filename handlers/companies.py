@@ -418,7 +418,7 @@ async def companyinfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
 
     cursor.execute("""
-    SELECT name, email, status
+    SELECT name, email, status, sent_at
     FROM companies
     WHERE user_id = ? AND name = ?
     """, (
@@ -434,7 +434,7 @@ async def companyinfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    name, email, status = company
+    name, email, status, sent_at = company
 
     cursor.execute("""
     SELECT COUNT(*)
@@ -455,6 +455,7 @@ async def companyinfo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Name: {name}\n"
         f"📧 Email: {email}\n\n"
         f"📌 Status:\n{status}\n\n"
+        f"📅 Versendet am:\n{sent_at or 'Noch nicht versendet'}\n\n"
         f"📄 PDF:\n{pdf_name}\n\n"
         f"🎤 Interviews: {interview_count}"
     )

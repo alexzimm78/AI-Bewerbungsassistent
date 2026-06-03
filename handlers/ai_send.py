@@ -3,6 +3,7 @@ from telegram.ext import ContextTypes
 
 from utils.email_sender import send_email
 from database.db import conn, cursor
+from datetime import datetime
 
 
 async def sendai(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -59,7 +60,7 @@ async def confirm_sendai(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("❌ Keine Bewerbung zum Senden gefunden.")
         return
 
-    subject = f"Bewerbung bei {company_name}"
+    subject = f"Bewerbung als Applikationsbetreuer Logistische Systeme"
 
     body = f"""
 Sehr geehrte Damen und Herren,
@@ -71,6 +72,10 @@ anbei übersende ich Ihnen meine Bewerbungsunterlagen.
 Mit freundlichen Grüßen
 Alexander Zimmermann
 """
+
+    sent_at = datetime.now().strftime(
+        "%d.%m.%Y %H:%M"
+    )
 
     try:
         send_email(
@@ -85,11 +90,16 @@ Alexander Zimmermann
 
         cursor.execute("""
         UPDATE companies
-        SET email = ?, status = ?
-        WHERE name = ?
+        SET email = ?,
+            status = ?,
+            sent_at = ?
+        WHERE user_id = ?
+        AND name = ?
         """, (
             to_email,
             "Bewerbung gesendet",
+            sent_at,
+            update.effective_user.id,
             company_name
         ))
 
