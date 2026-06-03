@@ -52,6 +52,7 @@ from handlers.dashboard import dashboard
 from handlers.ai_job import aijob
 from handlers.ai_cover import aibewerbung
 from handlers.ai_pdf import aipdf
+from handlers.ai_send import sendai, confirm_sendai, cancel_sendai
 
 
 load_dotenv()
@@ -104,6 +105,7 @@ app.add_handler(CommandHandler("dashboard", dashboard))
 app.add_handler(CommandHandler("aijob", aijob))
 app.add_handler(CommandHandler("aibewerbung", aibewerbung))
 app.add_handler(CommandHandler("aipdf", aipdf))
+app.add_handler(CommandHandler("sendai", sendai))
 
 # Buttons
 app.add_handler(CallbackQueryHandler(confirm_sendbewerbung, pattern="confirm_send_email"))
@@ -111,6 +113,9 @@ app.add_handler(CallbackQueryHandler(cancel_sendbewerbung, pattern="cancel_send_
 
 app.add_handler(CallbackQueryHandler(confirm_followup, pattern="confirm_followup"))
 app.add_handler(CallbackQueryHandler(cancel_followup, pattern="cancel_followup"))
+
+app.add_handler(CallbackQueryHandler(confirm_sendai, pattern="confirm_sendai"))
+app.add_handler(CallbackQueryHandler(cancel_sendai, pattern="cancel_sendai"))
 
 # Allgemeiner Button-Handler immer zuletzt
 app.add_handler(CallbackQueryHandler(button))

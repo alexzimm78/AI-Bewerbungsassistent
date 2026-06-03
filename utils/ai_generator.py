@@ -87,7 +87,9 @@ maximal 3 Sätze
 def generate_ai_cover_letter(job_text, skills, experience):
     prompt = f"""
 Du bist ein professioneller Bewerbungscoach für den deutschen Arbeitsmarkt.
-
+- Erwähne ein eigenes Projekt: AI-Bewerbungsassistent mit Python, SQLite, Telegram Bot, OpenAI API und PDF-Erzeugung.
+- Verwende keine Sonderzeichen wie ■.
+- Verwende am Ende immer: Alexander Zimmermann.
 Erstelle ein individuelles Bewerbungsschreiben auf Deutsch.
 Wichtig:
 Verwende am Ende:
