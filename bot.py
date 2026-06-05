@@ -56,6 +56,11 @@ from handlers.ai_send import sendai, confirm_sendai, cancel_sendai
 from handlers.autoapply import autoapply
 from handlers.followup_ai import followupai
 from handlers.followup_send import followupsend
+from handlers.kanban import kanban
+from handlers.next_actions import next_actions
+from handlers.priority import priority
+from handlers.reminder import reminder
+from handlers.jobscan import jobscan
 
 load_dotenv()
 
@@ -111,6 +116,17 @@ app.add_handler(CommandHandler("sendai", sendai))
 app.add_handler(CommandHandler("autoapply",autoapply))
 app.add_handler(CommandHandler("followupai",followupai))
 app.add_handler(CommandHandler("followupsend",followupsend))
+app.add_handler(CommandHandler("kanban",kanban))
+app.add_handler(CommandHandler("next",next_actions))
+app.add_handler(CommandHandler("priority",priority))
+app.add_handler(CommandHandler("reminder", reminder))
+app.add_handler(CommandHandler("jobscan",jobscan))
+
+
+
+
+
+
 
 
 

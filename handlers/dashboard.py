@@ -13,68 +13,33 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     FROM companies
     WHERE user_id = ?
     """, (user_id,))
-
     total = cursor.fetchone()[0]
 
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Bewerbung erstellt'
-    """, (user_id,))
+    def count_status(status_name):
+        cursor.execute("""
+        SELECT COUNT(*)
+        FROM companies
+        WHERE user_id = ?
+        AND status = ?
+        """, (
+            user_id,
+            status_name
+        ))
 
-    erstellt = cursor.fetchone()[0]
+        return cursor.fetchone()[0]
 
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Bewerbung gesendet'
-    """, (user_id,))
-
-    gesendet = cursor.fetchone()[0]
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Nachfassmail gesendet'
-    """, (user_id,))
-
-    nachfass = cursor.fetchone()[0]
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Interview'
-    """, (user_id,))
-
-    interviews_status = cursor.fetchone()[0]
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Zusage'
-    """, (user_id,))
-
-    zusagen = cursor.fetchone()[0]
-
-    cursor.execute("""
-    SELECT COUNT(*)
-    FROM companies
-    WHERE user_id = ?
-    AND status = 'Absage'
-    """, (user_id,))
-
-    absagen = cursor.fetchone()[0]
+    erstellt = count_status("Bewerbung erstellt")
+    gesendet = count_status("Bewerbung gesendet")
+    nachfass = count_status("Nachfassmail gesendet")
+    interview = count_status("Interview")
+    zusage = count_status("Zusage")
+    absage = count_status("Absage")
 
     offen = erstellt + gesendet + nachfass
 
     if total > 0:
         erfolgsquote = round(
-            ((interviews_status + zusagen) / total) * 100,
+            ((interview + zusage) / total) * 100,
             1
         )
     else:
@@ -82,14 +47,14 @@ async def dashboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = (
         "📊 Bewerbungs Dashboard\n\n"
-        f"📨 Firmen gesamt: {total}\n\n"
-        f"📝 Erstellt: {erstellt}\n"
-        f"📤 Gesendet: {gesendet}\n"
-        f"📩 Nachfassmail: {nachfass}\n"
-        f"🎤 Interview: {interviews_status}\n"
-        f"✅ Zusagen: {zusagen}\n"
-        f"❌ Absagen: {absagen}\n"
-        f"⏳ Offen: {offen}\n\n"
+        f"🏢 Firmen gesamt: {total}\n\n"
+        f"📝 Bewerbung erstellt: {erstellt}\n"
+        f"📧 Bewerbung gesendet: {gesendet}\n"
+        f"📬 Nachfassmail gesendet: {nachfass}\n"
+        f"🎤 Interview: {interview}\n"
+        f"✅ Zusage: {zusage}\n"
+        f"❌ Absage: {absage}\n\n"
+        f"⏳ Offen: {offen}\n"
         f"📈 Erfolgsquote: {erfolgsquote}%"
     )
 

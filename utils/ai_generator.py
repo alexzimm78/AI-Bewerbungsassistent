@@ -132,6 +132,7 @@ Anforderungen:
 
     return result
 
+###
 def generate_followup_email(company_name, sent_at):
     prompt = f"""
 Du bist ein professioneller Bewerbungsassistent.
@@ -163,6 +164,66 @@ Alexander Zimmermann
     result = response.output_text
 
     result = result.replace("Vorname Nachname", "Alexander Zimmermann")
+    result = result.replace("■", "")
+    result = result.replace("–", "-")
+    result = result.replace("—", "-")
+
+    return result
+
+###
+def generate_job_analysis(job_text):
+
+    prompt = f"""
+Du bist ein Bewerbungsassistent für Alexander Zimmermann.
+
+Profil Alexander Zimmermann:
+- IT-Quereinsteiger
+- Mehrjährige Erfahrung in Logistik und Kundenservice
+- Aktuelle Weiterbildung zum AI Engineer bei AIT Technology School von 03/2026 bis 09/2026
+- Kenntnisse: Python, SQLite, Git/GitHub, Microsoft 365, OpenAI API, Telegram Bot Entwicklung, PDF-Erzeugung
+- Eigenes Projekt: AI-Bewerbungsassistent mit Python, SQLite, Telegram Bot, OpenAI API, PDF-Generierung, CRM, AutoApply und Follow-Up-Funktion
+- Ziel: Einstieg in IT Support, Service Desk oder Applikationsbetreuung
+
+Stellenanzeige:
+{job_text}
+
+Liefere die Antwort in diesem Format:
+
+🔍 Job Analyse
+
+💼 Position:
+...
+
+⭐ Wichtige Skills:
+- ...
+
+🎯 Passung für Alexander:
+0-100 %
+
+✅ Stärken:
+- ...
+
+⚠️ Lücken:
+- ...
+
+📝 Empfehlung:
+Bewerben / Vielleicht / Nicht passend
+
+Kurze Begründung:
+maximal 4 Sätze
+
+Wichtig:
+Bewerte konkret Alexander Zimmermann.
+Schreibe nicht: "Wenn du mir Alexanders CV gibst".
+"""
+
+    response = client.responses.create(
+        model="gpt-5",
+        input=prompt
+    )
+
+    result = response.output_text
+
     result = result.replace("■", "")
     result = result.replace("–", "-")
     result = result.replace("—", "-")
