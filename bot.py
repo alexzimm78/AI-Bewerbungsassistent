@@ -55,7 +55,7 @@ from handlers.ai_pdf import aipdf
 from handlers.ai_send import sendai, confirm_sendai, cancel_sendai
 from handlers.autoapply import autoapply
 from handlers.followup_ai import followupai
-
+from handlers.followup_send import followupsend
 
 load_dotenv()
 
@@ -110,6 +110,7 @@ app.add_handler(CommandHandler("aipdf", aipdf))
 app.add_handler(CommandHandler("sendai", sendai))
 app.add_handler(CommandHandler("autoapply",autoapply))
 app.add_handler(CommandHandler("followupai",followupai))
+app.add_handler(CommandHandler("followupsend",followupsend))
 
 
 
