@@ -54,6 +54,7 @@ from handlers.ai_cover import aibewerbung
 from handlers.ai_pdf import aipdf
 from handlers.ai_send import sendai, confirm_sendai, cancel_sendai
 from handlers.autoapply import autoapply
+from handlers.followup_ai import followupai
 
 
 load_dotenv()
@@ -108,6 +109,9 @@ app.add_handler(CommandHandler("aibewerbung", aibewerbung))
 app.add_handler(CommandHandler("aipdf", aipdf))
 app.add_handler(CommandHandler("sendai", sendai))
 app.add_handler(CommandHandler("autoapply",autoapply))
+app.add_handler(CommandHandler("followupai",followupai))
+
+
 
 
 # Buttons

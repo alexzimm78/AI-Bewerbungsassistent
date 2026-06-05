@@ -132,3 +132,39 @@ Anforderungen:
 
     return result
 
+def generate_followup_email(company_name, sent_at):
+    prompt = f"""
+Du bist ein professioneller Bewerbungsassistent.
+
+Erstelle eine kurze Nachfassmail auf Deutsch.
+
+Firma: {company_name}
+Bewerbung versendet am: {sent_at}
+Bewerber: Alexander Zimmermann
+
+Anforderungen:
+- kurz und professionell
+- maximal 120 Wörter
+- keine erneute ausführliche Bewerbung
+- freundlich nach dem Stand der Bewerbung fragen
+- keine erfundenen Details
+- mit Betreff
+- erwähne kein genaues Uhrzeitformat, nur das Datum
+- am Ende:
+Mit freundlichen Grüßen
+Alexander Zimmermann
+"""
+
+    response = client.responses.create(
+        model="gpt-5",
+        input=prompt
+    )
+
+    result = response.output_text
+
+    result = result.replace("Vorname Nachname", "Alexander Zimmermann")
+    result = result.replace("■", "")
+    result = result.replace("–", "-")
+    result = result.replace("—", "-")
+
+    return result
